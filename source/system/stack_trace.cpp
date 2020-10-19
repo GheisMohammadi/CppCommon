@@ -38,18 +38,6 @@
 #endif
 #endif
 
-#ifndef bfd_get_section_flags
-#define bfd_get_section_flags(H, S) bfd_section_flags(S)
-#endif /* bfd_get_section_flags */
-
-#ifndef bfd_get_section_size
-#define bfd_get_section_size(S) bfd_section_size(S)
-#endif /* bfd_get_section_size */
-
-#ifndef bfd_get_section_vma
-#define bfd_get_section_vma(H, S) bfd_section_vma(S)
-#endif /* bfd_get_section_vma */
-
 namespace CppCommon {
 
 std::ostream& operator<<(std::ostream& os, const StackTrace::Frame& frame)
@@ -171,14 +159,14 @@ StackTrace::StackTrace(int skip)
             if (found)
                 break;
 
-            if ((bfd_section_flags(section) & SEC_ALLOC) == 0)
+            if ((bfd_get_section_flags(abfd, section) & SEC_ALLOC) == 0)
                 continue;
 
-            bfd_vma vma = bfd_section_vma(section);
+            bfd_vma vma = bfd_get_section_vma(abfd, section);
             if (pc < vma)
                 continue;
 
-            bfd_size_type secsize = bfd_section_size(section);
+            bfd_size_type secsize = bfd_get_section_size(section);
             if (pc >= vma + secsize)
                 continue;
 
